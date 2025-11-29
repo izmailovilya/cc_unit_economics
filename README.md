@@ -7,6 +7,7 @@ Claude Code plugin for unit economics analysis - calculate metrics, analyze coho
 - **Methodology Knowledge** - Deep understanding of unit economics metrics (CAC, LTV, AMPPU, payback period, retention)
 - **Case Analysis** - Analyze real business cases (Flowwow marketplace, EnglishMeow EdTech, cohort data)
 - **Economics Analyst** - Autonomous agent for deep analysis with access to course materials
+- **Google Sheets Integration** - Create professional spreadsheets with unit economics calculations directly in Google Sheets
 
 ## Components
 
@@ -24,6 +25,16 @@ Specialized agent for:
 - Channel comparison and optimization
 - Cohort retention analysis
 
+### Command: /create-table
+Generate Google Sheets spreadsheets with:
+- Unit economics dashboard
+- Automated calculations (CAC, LTV, AMPPU)
+- Cohort analysis tables
+- Funnel visualization
+- Channel comparison
+
+**Setup required**: See [Google Sheets Setup Guide](unit-economics/GOOGLE_SHEETS_SETUP.md)
+
 ## Course Materials
 
 The plugin includes comprehensive unit economics course materials:
@@ -38,10 +49,12 @@ The plugin includes comprehensive unit economics course materials:
 ### Install via Claude Code (Recommended)
 
 Inside Claude Code, run:
-```
+```shell
 /plugin marketplace add izmailovilya/cc_unit_economics
-/plugin install unit-economics
+/plugin install unit-economics@cc_unit_economics
 ```
+
+**For Google Sheets integration**, follow the [setup guide](unit-economics/GOOGLE_SHEETS_SETUP.md) to configure MCP.
 
 ### Install from GitHub Manually
 ```bash
@@ -68,6 +81,11 @@ git clone https://github.com/izmailovilya/cc_unit_economics.git
 - "Analyze the Flowwow case and find bottlenecks"
 - "Compare marketing channels effectiveness"
 - "Build cohort retention analysis"
+
+**Create spreadsheets (requires Google Sheets setup):**
+- `/create-table` - Generate unit economics spreadsheet
+- "Create a cohort analysis table for my SaaS"
+- "Build a dashboard for tracking CAC and LTV"
 
 ## Author
 
