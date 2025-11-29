@@ -43,7 +43,7 @@ cc --plugin-dir ~/cc_unit_economics
 
 ### From Local Directory
 ```bash
-cc --plugin-dir /Users/ilya/cc_unit_economy
+cc --plugin-dir ~/cc_unit_economics
 ```
 
 ### For Project-Specific Use
