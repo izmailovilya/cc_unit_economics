@@ -1,6 +1,13 @@
 # Claude Code local settings
 .claude/
 
+# Google Cloud credentials - NEVER commit these!
+**/credentials.json
+**/service-account*.json
+**/*gserviceaccount*.json
+**/token.json
+.google-credentials/
+
 # macOS
 .DS_Store
 
