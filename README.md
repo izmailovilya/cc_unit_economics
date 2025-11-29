@@ -35,19 +35,22 @@ The plugin includes comprehensive unit economics course materials:
 
 ## Installation
 
-### From GitHub Repository
+### Install via Claude Code (Recommended)
+
+Inside Claude Code, run:
+```
+/plugin marketplace add izmailovilya/cc_unit_economics
+/plugin install unit-economics
+```
+
+### Install from GitHub Manually
 ```bash
 git clone https://github.com/izmailovilya/cc_unit_economics.git
 cc --plugin-dir ~/cc_unit_economics
 ```
 
-### From Local Directory
-```bash
-cc --plugin-dir ~/cc_unit_economics
-```
-
 ### For Project-Specific Use
-Clone or copy to your project's `.claude-plugin/` directory:
+Clone to your project's `.claude-plugin/` directory:
 ```bash
 cd your-project
 git clone https://github.com/izmailovilya/cc_unit_economics.git .claude-plugin/unit-economics

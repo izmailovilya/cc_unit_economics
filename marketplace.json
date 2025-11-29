@@ -1,0 +1,29 @@
+{
+  "name": "izmailovilya",
+  "displayName": "Ilya Izmailov's Plugins",
+  "description": "Personal marketplace with business analytics plugins",
+  "plugins": {
+    "unit-economics": {
+      "name": "unit-economics",
+      "displayName": "Unit Economics",
+      "description": "Comprehensive unit economics analysis - calculate CAC, LTV, AMPPU, analyze cohorts, optimize business models using Heroes.camp methodology",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ilya Izmailov",
+        "url": "https://github.com/izmailovilya"
+      },
+      "repository": "https://github.com/izmailovilya/cc_unit_economics",
+      "keywords": [
+        "unit-economics",
+        "metrics",
+        "cac",
+        "ltv",
+        "cohort-analysis",
+        "conversion",
+        "business-analytics",
+        "saas-metrics"
+      ],
+      "category": "analytics"
+    }
+  }
+}
