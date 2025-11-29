@@ -1,0 +1,14 @@
+{
+  "name": "izmailovilya",
+  "owner": {
+    "name": "Ilya Izmailov"
+  },
+  "description": "Personal marketplace with business analytics plugins",
+  "plugins": [
+    {
+      "name": "unit-economics",
+      "source": "./unit-economics",
+      "description": "Comprehensive unit economics analysis - calculate CAC, LTV, AMPPU, analyze cohorts, optimize business models using Heroes.camp methodology"
+    }
+  ]
+}

@@ -46,14 +46,15 @@ Inside Claude Code, run:
 ### Install from GitHub Manually
 ```bash
 git clone https://github.com/izmailovilya/cc_unit_economics.git
-cc --plugin-dir ~/cc_unit_economics
+cc --plugin-dir ~/cc_unit_economics/unit-economics
 ```
 
 ### For Project-Specific Use
 Clone to your project's `.claude-plugin/` directory:
 ```bash
-cd your-project
-git clone https://github.com/izmailovilya/cc_unit_economics.git .claude-plugin/unit-economics
+cd your-project/.claude-plugin
+git clone https://github.com/izmailovilya/cc_unit_economics.git
+# Plugin will be available as unit-economics
 ```
 
 ## Usage Examples
