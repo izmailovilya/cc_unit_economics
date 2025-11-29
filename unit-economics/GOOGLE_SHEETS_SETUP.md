@@ -1,94 +1,83 @@
 # Google Sheets Integration Setup
 
-This plugin includes MCP integration for creating unit economics tables directly in Google Sheets.
+This plugin uses OAuth 2.0 to create unit economics tables in your personal Google Sheets.
 
-## Prerequisites
+## Quick Start (Works Out of the Box)
 
-- Google Cloud account
-- Python with `uvx` installed (or `uv`)
+**No setup required!** The plugin includes OAuth credentials for quick testing.
 
-## Setup Steps
+1. **Install uvx** (if not already installed):
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
 
-### 1. Install uvx (if not already installed)
+2. **Restart Claude Code**
 
-```bash
-# Install uv (includes uvx)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+3. **Run the command:**
+   ```
+   /unit-economics:create-table
+   ```
 
-### 2. Create Google Cloud Project
+4. **Authorize in browser** (first time only):
+   - Browser will open automatically
+   - Sign in with your Google account
+   - Grant permissions
+   - Token will be saved to `~/.claude/google-oauth/token.json`
+
+That's it! The spreadsheet will be created in your Google Drive.
+
+---
+
+## Advanced: Use Your Own OAuth Credentials (Recommended for Production)
+
+For unlimited quota and better security, create your own OAuth Client ID:
+
+### 1. Create Google Cloud Project
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project (or use existing)
+2. Create a new project
 3. Enable APIs:
    - Google Sheets API
    - Google Drive API
 
-### 3. Set up Service Account (Recommended)
+### 2. Create OAuth Client ID
 
 1. Go to **APIs & Services → Credentials**
-2. Click **Create Credentials → Service Account**
-3. Fill in details and click **Create**
-4. Click on created service account
-5. Go to **Keys** tab → **Add Key → Create new key**
-6. Choose **JSON** format and download
+2. Configure **OAuth consent screen**:
+   - User Type: **External**
+   - App name: "Unit Economics Plugin"
+   - Add your email as test user
+3. Click **Create Credentials → OAuth 2.0 Client ID**
+4. Choose **Desktop app**
+5. Download the JSON file
 
-### 4. Create Google Drive Folder
+### 3. Configure Plugin
 
-1. Create a folder in Google Drive where spreadsheets will be stored
-2. Right-click folder → **Share**
-3. Add service account email (found in JSON file as `client_email`)
-4. Give **Editor** permissions
-5. Copy folder ID from URL: `https://drive.google.com/drive/folders/{FOLDER_ID}`
-
-### 5. Configure Environment Variables
-
-Add to your shell profile (`~/.zshrc` or `~/.bashrc`):
+Set environment variable in `~/.zshrc`:
 
 ```bash
-export GOOGLE_SERVICE_ACCOUNT_PATH="/path/to/your/service-account-key.json"
-export GOOGLE_DRIVE_FOLDER_ID="your_folder_id_here"
+export GOOGLE_OAUTH_CREDENTIALS="/path/to/your/oauth-credentials.json"
 ```
 
-Reload your shell:
+Reload shell:
 ```bash
-source ~/.zshrc  # or source ~/.bashrc
+source ~/.zshrc
 ```
 
-### 6. Test the Integration
+### 4. Restart Claude Code
 
-Restart Claude Code and try:
+The plugin will now use your credentials!
 
-```shell
-/create-table
-```
+---
 
-## Alternative: OAuth 2.0 Setup
+## How It Works
 
-If you prefer user-based authentication:
+1. **First Run**: Opens browser for Google OAuth authorization
+2. **Token Saved**: Access token saved to `~/.claude/google-oauth/token.json`
+3. **Subsequent Runs**: Uses saved token (no browser needed)
+4. **Spreadsheet Created**: In your personal Google Drive (not shared storage)
 
-1. In Google Cloud Console: **APIs & Services → Credentials**
-2. **Create Credentials → OAuth 2.0 Client ID**
-3. Choose **Desktop app**
-4. Download credentials JSON
-5. Set environment variable:
-   ```bash
-   export GOOGLE_CREDENTIALS_PATH="/path/to/oauth-credentials.json"
-   ```
-
-On first use, you'll authorize via browser and token will be saved.
-
-## Available MCP Tools
-
-The plugin can use these Google Sheets operations:
-
-- `create_spreadsheet` - Create new spreadsheet
-- `create_sheet` - Add tabs to spreadsheet
-- `update_cells` - Write data to cells
-- `batch_update_cells` - Bulk data updates
-- `get_sheet_data` - Read spreadsheet data
-- `list_spreadsheets` - List all spreadsheets in folder
-- `share_spreadsheet` - Share with specific users
+---
 
 ## Troubleshooting
 
@@ -96,22 +85,32 @@ The plugin can use these Google Sheets operations:
 - Install uv: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Restart terminal
 
-**Error: "Permission denied"**
-- Check service account has Editor access to Drive folder
-- Verify `GOOGLE_DRIVE_FOLDER_ID` is correct
-
 **Error: "API not enabled"**
-- Enable Google Sheets API and Google Drive API in Cloud Console
+- Enable Google Sheets API: https://console.cloud.google.com/apis/library/sheets.googleapis.com
+- Enable Google Drive API: https://console.cloud.google.com/apis/library/drive.googleapis.com
+
+**Browser doesn't open**
+- Check console output for authorization URL
+- Copy and paste URL into browser manually
+
+**Token expired**
+- Delete `~/.claude/google-oauth/token.json`
+- Run `/create-table` again to re-authorize
+
+---
 
 ## Security Notes
 
-- **Never commit** service account JSON to git
-- Store credentials securely
-- Use service accounts for automation
-- Use OAuth for personal use
-- Restrict service account permissions to specific folder only
+- ✅ OAuth credentials (client_id/client_secret) are safe to share for desktop apps
+- ✅ Each user authorizes with their own Google account
+- ✅ Tokens are stored locally (`~/.claude/google-oauth/token.json`)
+- ⚠️ Shared credentials have quota limits (use your own for production)
+- 🔒 Never commit `token.json` to git (already in .gitignore)
+
+---
 
 ## Sources
 
 - [MCP Google Sheets GitHub](https://github.com/xing5/mcp-google-sheets)
 - [Google Sheets API Documentation](https://developers.google.com/sheets/api)
+- [OAuth 2.0 for Desktop Apps](https://developers.google.com/identity/protocols/oauth2/native-app)

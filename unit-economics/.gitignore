@@ -1,0 +1,6 @@
+# Token contains user's personal access - never commit
+token.json
+
+# Python
+*.pyc
+__pycache__/

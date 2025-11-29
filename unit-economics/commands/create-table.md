@@ -1,94 +1,130 @@
 ---
 description: Create Google Sheets table with unit economics analysis
 allowed-tools:
-  - mcp__google-sheets__*
+  - mcp__*
   - Read
   - AskUserQuestion
-  - Bash
 ---
 
 # Create Unit Economics Table
 
 Generate a professional Google Sheets spreadsheet with comprehensive unit economics analysis and calculations.
 
-## IMPORTANT: Check MCP Setup First
+## How It Works
 
-Before proceeding, **check if Google Sheets MCP is available**:
+When you run this command:
 
-1. Try to list available MCP tools by looking for `mcp__google-sheets__*` tools
-2. If MCP tools are NOT available, provide setup instructions to the user:
+1. **First time**: Browser opens for Google OAuth authorization (one-time setup)
+2. **MCP connects**: Uses `mcp-google-sheets` to access Google Sheets API
+3. **Gathers info**: Asks about your business model and metrics
+4. **Creates spreadsheet**: Multiple tabs with formulas and formatting
+5. **Returns URL**: Link to your new spreadsheet in Google Drive
+
+## Your Task
+
+### 1. Gather Business Data
+
+Ask the user about:
+- **Business model type**: e-commerce, SaaS, marketplace, mobile app, etc.
+- **Key metrics**: CAC, LTV, AMPPU, conversion, retention, payback period
+- **Pricing plans**: if applicable (Starter, Business, Enterprise)
+- **Data source**: CSV file path, or will input manually
+
+### 2. Design Spreadsheet Structure
+
+Create these tabs using MCP tools:
+
+**Tab 1: Inputs**
+- All input parameters (pricing, COGS, CAC, churn rates)
+- Color-coded for easy editing
+- Notes column explaining each parameter
+
+**Tab 2: Unit Economics**
+- AMPPU calculation: `Price - COGS`
+- CAC calculation: `CPUser / C1`
+- LTV calculation: `AMPPU / Churn`
+- LTV/CAC ratio
+- Payback period
+- Blended metrics (if multiple plans)
+
+**Tab 3: Growth Projections**
+- 12-month forecast
+- New customers, MRR, COGS, Gross Profit
+- Marketing spend, Net Profit
+- Cumulative profit tracking
+
+**Tab 4: Cohort Analysis**
+- Retention table (M0-M12)
+- Cohort MRR over time
+- Key retention metrics with targets
+
+### 3. Use MCP Google Sheets Tools
+
+Available MCP tools (use these with `mcp__google-sheets__` prefix):
+- `create_spreadsheet` - Create new spreadsheet
+- `create_sheet` - Add tabs
+- `update_cells` or `batch_update_cells` - Write data and formulas
+- `format_cells` - Apply formatting (colors, borders, number formats)
+
+### 4. Populate with Correct Formulas
+
+**IMPORTANT**: Use formulas from `${CLAUDE_PLUGIN_ROOT}/materials/glossary.md`:
 
 ```
-Google Sheets MCP is not configured yet. Here's how to set it up:
-
-1. Install uvx (if not installed):
-   curl -LsSf https://astral.sh/uv/install.sh | sh
-
-2. Follow the setup guide at:
-   ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
-
-   Or read it with:
-   cat ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
-
-3. Key steps:
-   - Create Google Cloud project
-   - Enable Google Sheets API + Drive API
-   - Create Service Account
-   - Download JSON key
-   - Create Drive folder and share with service account
-   - Set environment variables:
-     export GOOGLE_SERVICE_ACCOUNT_PATH="/path/to/key.json"
-     export GOOGLE_DRIVE_FOLDER_ID="folder_id"
-
-4. Restart Claude Code to load MCP server
-
-Would you like me to show the detailed setup instructions?
+CAC = Acquisition Costs / buyers
+AMPPU = (Av.Price - COGS) × AvPaymentCount
+LTV = AMPPU / Churn
+C1 = buyers / users
+Payback Period = CAC / AMPU
 ```
 
-3. If user confirms they want detailed instructions, use Read tool to show `${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md`
+Reference cells from the Inputs tab (e.g., `=Inputs!B4*Inputs!B5`)
 
-## Your Task (if MCP is available)
+### 5. Apply Professional Formatting
 
-1. **Gather business data** from the user:
-   - Business model type (e-commerce, SaaS, marketplace, etc.)
-   - Key metrics they want to track (CAC, LTV, AMPPU, conversion, retention, etc.)
-   - Existing data source (CSV file path, or manual input)
+- **Headers**: Bold, colored background, centered
+- **Numbers**: Currency format for $, percentage for %
+- **Conditional formatting**: Red for negative profit, green for positive
+- **Freeze rows**: Top row on each tab
+- **Column widths**: Auto-adjust or set manually
+- **Borders**: Around tables for clarity
 
-2. **Design the spreadsheet structure**:
-   - **Summary Dashboard** tab - key metrics, charts, KPIs
-   - **Raw Data** tab - input data (users, conversions, revenue)
-   - **Calculations** tab - formulas for CAC, LTV, AMPPU, payback period
-   - **Cohort Analysis** tab - retention curves, cohort LTV
-   - **Channel Analysis** tab - compare marketing channels effectiveness
-   - **Funnel** tab - conversion funnel visualization
+### 6. Return Results
 
-3. **Create the spreadsheet** using MCP Google Sheets tools:
-   - Use `create_spreadsheet` to create new spreadsheet
-   - Use `create_sheet` to add multiple tabs
-   - Use `update_cells` or `batch_update_cells` to populate data
-   - Use formatting tools for headers, colors, number formats
+Provide to the user:
+- **Spreadsheet URL**: Direct link to open in browser
+- **Brief explanation**: What each tab contains
+- **How to use**: Which cells to edit (Inputs tab)
+- **Key insights**: Current LTV/CAC ratio, payback period status
 
-4. **Populate with formulas**:
-   - CAC = Marketing Spend / New Customers
-   - LTV = AMPPU / Churn Rate
-   - AMPPU = Avg Price × Margin × Avg Payment Count
-   - Payback Period = CAC / AMPU
-   - Add data validation and conditional formatting
+## Example Interaction
 
-5. **Share the result**:
-   - Use `share_spreadsheet` if needed
-   - Provide the spreadsheet URL to the user
-   - Explain the structure and how to use it
+**User**: "Create a unit economics table for my SaaS business"
+
+**You**:
+1. Ask: "What pricing plans do you have? (e.g., Starter $49, Business $149)"
+2. Ask: "What's your estimated CAC and monthly churn?"
+3. Read `materials/glossary.md` for formula reference
+4. Create spreadsheet with MCP tools
+5. Populate Inputs tab with their data
+6. Add formulas in Unit Economics tab
+7. Return: "Here's your spreadsheet: [URL]. Key finding: LTV/CAC = 3.2 (healthy!)"
 
 ## Tips
 
-- Use course materials from `${CLAUDE_PLUGIN_ROOT}/materials/glossary.md` for correct formulas
-- If user has CSV data, read it first with Read tool
-- Add helpful comments in cells to explain formulas
-- Use professional formatting: freeze header rows, add borders, color-code sections
-- Include examples or sample data if user starts with empty sheet
+- Start simple with Inputs + Unit Economics tabs, add others if requested
+- Use glossary.md for accurate formulas (not assumptions!)
+- Add comments in cells to explain complex formulas
+- Include sample data if user doesn't have real numbers yet
+- Color-code input cells vs calculated cells (blue vs white)
 
-## Example Usage
+## Troubleshooting
 
-User: "Create a unit economics table for my SaaS business"
-You: Ask about their metrics → Read relevant materials → Create structured spreadsheet → Populate with formulas → Share URL
+**If MCP tools not available:**
+- User needs to restart Claude Code after installing plugin
+- Check `${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md` for setup guide
+
+**If browser doesn't open for OAuth:**
+- Check terminal output for authorization URL
+- Copy URL and paste in browser manually
+- Token will be saved after successful authorization
