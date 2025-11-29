@@ -4,13 +4,50 @@ allowed-tools:
   - mcp__google-sheets__*
   - Read
   - AskUserQuestion
+  - Bash
 ---
 
 # Create Unit Economics Table
 
 Generate a professional Google Sheets spreadsheet with comprehensive unit economics analysis and calculations.
 
-## Your Task
+## IMPORTANT: Check MCP Setup First
+
+Before proceeding, **check if Google Sheets MCP is available**:
+
+1. Try to list available MCP tools by looking for `mcp__google-sheets__*` tools
+2. If MCP tools are NOT available, provide setup instructions to the user:
+
+```
+Google Sheets MCP is not configured yet. Here's how to set it up:
+
+1. Install uvx (if not installed):
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+2. Follow the setup guide at:
+   ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
+
+   Or read it with:
+   cat ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
+
+3. Key steps:
+   - Create Google Cloud project
+   - Enable Google Sheets API + Drive API
+   - Create Service Account
+   - Download JSON key
+   - Create Drive folder and share with service account
+   - Set environment variables:
+     export GOOGLE_SERVICE_ACCOUNT_PATH="/path/to/key.json"
+     export GOOGLE_DRIVE_FOLDER_ID="folder_id"
+
+4. Restart Claude Code to load MCP server
+
+Would you like me to show the detailed setup instructions?
+```
+
+3. If user confirms they want detailed instructions, use Read tool to show `${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md`
+
+## Your Task (if MCP is available)
 
 1. **Gather business data** from the user:
    - Business model type (e-commerce, SaaS, marketplace, etc.)
