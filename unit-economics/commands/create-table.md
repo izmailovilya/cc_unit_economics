@@ -22,7 +22,48 @@ When you run this command:
 
 ## Your Task
 
-### 1. Gather Business Data
+### Step 0: CRITICAL - Check MCP Setup (Do This FIRST!)
+
+**Before doing anything else**, check if Google Sheets MCP is configured:
+
+1. **Try to list MCP tools**: Look for `mcp__google-sheets__*` tools in your available tools
+2. **If MCP tools are NOT available**, tell the user:
+
+```
+⚠️ Google Sheets MCP is not set up yet!
+
+To create spreadsheets, you need to configure Google Sheets integration. It takes 5 minutes:
+
+1. **Install uvx** (if not installed):
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+2. **Follow setup guide**: Read detailed instructions at:
+   ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
+
+   Or run: cat ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
+
+3. **Quick summary**:
+   - Create Google Cloud project
+   - Enable Google Sheets API + Drive API
+   - Create OAuth Client ID (Desktop app)
+   - Download credentials JSON
+   - Save to: ~/.claude/unit-economics/credentials.json
+   - Restart Claude Code
+
+4. **Test**: Run /create-table again
+
+Would you like me to show you the detailed setup instructions?
+```
+
+3. **If user says yes**, use Read tool to show the full GOOGLE_SHEETS_SETUP.md content
+
+4. **Stop here** - do not attempt to create spreadsheet without MCP
+
+5. **If MCP IS available**, proceed with creating the spreadsheet!
+
+---
+
+### 1. Gather Business Data (Only if MCP is available)
 
 Ask the user about:
 - **Business model type**: e-commerce, SaaS, marketplace, mobile app, etc.
