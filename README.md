@@ -1,0 +1,74 @@
+# Unit Economics Plugin
+
+Claude Code plugin for unit economics analysis - calculate metrics, analyze cohorts, and optimize business models.
+
+## Features
+
+- **Methodology Knowledge** - Deep understanding of unit economics metrics (CAC, LTV, AMPPU, payback period, retention)
+- **Case Analysis** - Analyze real business cases (Flowwow marketplace, EnglishMeow EdTech, cohort data)
+- **Economics Analyst** - Autonomous agent for deep analysis with access to course materials
+
+## Components
+
+### Skill: unit-economics
+Automatically activates when discussing:
+- Unit economics metrics (CAC, LTV, AMPPU, COGS)
+- Conversion analysis and optimization
+- A/B testing methodology
+- Cohort analysis and retention
+
+### Agent: economics-analyst
+Specialized agent for:
+- Deep case analysis with CSV data
+- Finding bottlenecks in sales funnels
+- Channel comparison and optimization
+- Cohort retention analysis
+
+## Course Materials
+
+The plugin includes comprehensive unit economics course materials:
+
+- **materials/glossary.md** - Complete metrics glossary with formulas
+- **materials/conversion.md** - Conversion optimization methodology
+- **materials/ab_testing.md** - A/B testing best practices
+- **materials/cases/** - Real business case studies (CSV format)
+
+## Installation
+
+### From GitHub Repository
+```bash
+git clone https://github.com/izmailovilya/cc_unit_economics.git
+cc --plugin-dir ~/cc_unit_economics
+```
+
+### From Local Directory
+```bash
+cc --plugin-dir /Users/ilya/cc_unit_economy
+```
+
+### For Project-Specific Use
+Clone or copy to your project's `.claude-plugin/` directory:
+```bash
+cd your-project
+git clone https://github.com/izmailovilya/cc_unit_economics.git .claude-plugin/unit-economics
+```
+
+## Usage Examples
+
+**Ask about metrics:**
+- "How to calculate CAC?"
+- "What's the difference between AMPPU and LTV?"
+- "Why can't we use sessions for conversion?"
+
+**Analyze cases:**
+- "Analyze the Flowwow case and find bottlenecks"
+- "Compare marketing channels effectiveness"
+- "Build cohort retention analysis"
+
+## Author
+
+Created by Ilya Izmailov based on Heroes.camp unit economics course materials.
+
+## License
+
+MIT

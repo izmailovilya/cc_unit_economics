@@ -1,0 +1,19 @@
+{
+  "name": "unit-economics",
+  "version": "1.0.0",
+  "description": "Unit economics analysis plugin - calculate metrics, analyze cohorts, optimize business models using course methodology",
+  "author": {
+    "name": "Ilya Izmailov",
+    "url": "https://github.com/izmailovilya"
+  },
+  "keywords": [
+    "unit-economics",
+    "metrics",
+    "cac",
+    "ltv",
+    "cohort-analysis",
+    "conversion",
+    "business-analytics",
+    "saas-metrics"
+  ]
+}
