@@ -1,5 +1,6 @@
 {
   "name": "izmailovilya",
+  "version": "1.0.0",
   "owner": {
     "name": "Ilya Izmailov"
   },
@@ -7,8 +8,10 @@
   "plugins": [
     {
       "name": "unit-economics",
+      "version": "1.0.0",
       "source": "./unit-economics",
-      "description": "Comprehensive unit economics analysis - calculate CAC, LTV, AMPPU, analyze cohorts, optimize business models using Heroes.camp methodology"
+      "description": "Comprehensive unit economics analysis - calculate CAC, LTV, AMPPU, analyze cohorts, optimize business models using Heroes.camp methodology",
+      "category": "analytics"
     }
   ]
 }
