@@ -24,10 +24,18 @@ When you run this command:
 
 ### Step 0: CRITICAL - Check MCP Setup (Do This FIRST!)
 
-**Before doing anything else**, check if Google Sheets MCP is configured:
+**Before doing anything else**, actively verify Google Sheets MCP is WORKING (not just visible):
 
-1. **Try to list MCP tools**: Look for `mcp__google-sheets__*` tools in your available tools
-2. **If MCP tools are NOT available**, tell the user:
+1. **Make a TEST CALL**: Call `list_spreadsheets` tool (it's read-only and safe)
+   - Look for tool containing `google-sheets` and `list_spreadsheets` in the name
+   - Example: `mcp__plugin_unit-economics_google-sheets__list_spreadsheets`
+   - Just seeing MCP tools in the list is NOT enough - they might fail without credentials!
+
+2. **Analyze the result**:
+   - **Success** (returns list, even empty) → MCP IS working, proceed!
+   - **Error about credentials, OAuth, token, file not found** → MCP NOT configured
+
+3. **If MCP is NOT configured**, tell the user:
 
 ```
 ⚠️ Google Sheets MCP is not set up yet!
@@ -55,11 +63,11 @@ To create spreadsheets, you need to configure Google Sheets integration. It take
 Would you like me to show you the detailed setup instructions?
 ```
 
-3. **If user says yes**, use Read tool to show the full GOOGLE_SHEETS_SETUP.md content
+4. **If user says yes**, use Read tool to show the full GOOGLE_SHEETS_SETUP.md content
 
-4. **Stop here** - do not attempt to create spreadsheet without MCP
+5. **Stop here** - do not attempt to create spreadsheet without working MCP
 
-5. **If MCP IS available**, proceed with creating the spreadsheet!
+6. **If MCP IS working**, proceed with creating the spreadsheet!
 
 ---
 
@@ -101,11 +109,30 @@ Create these tabs using MCP tools:
 
 ### 3. Use MCP Google Sheets Tools
 
-Available MCP tools (use these with `mcp__google-sheets__` prefix):
-- `create_spreadsheet` - Create new spreadsheet
-- `create_sheet` - Add tabs
-- `update_cells` or `batch_update_cells` - Write data and formulas
-- `format_cells` - Apply formatting (colors, borders, number formats)
+This plugin uses [xing5/mcp-google-sheets](https://github.com/xing5/mcp-google-sheets). Available tools:
+
+**Reading:**
+- `list_spreadsheets` - List accessible spreadsheets
+- `list_sheets` - List all sheets (tabs) in a spreadsheet
+- `get_sheet_data` - Read data from a range
+- `get_sheet_formulas` - Read formulas from a range
+
+**Creating:**
+- `create_spreadsheet` - Create new spreadsheet (returns spreadsheet_id)
+- `create_sheet` - Add new sheet (tab) to spreadsheet
+
+**Writing:**
+- `update_cells` - Write data to a specific range
+- `batch_update_cells` - Update multiple ranges at once
+- `add_rows` - Append rows to end of sheet
+- `add_columns` - Add columns to a sheet
+
+**Managing:**
+- `share_spreadsheet` - Share with users/emails
+- `copy_sheet` - Duplicate a sheet
+- `rename_sheet` - Rename a sheet
+
+**Note**: Tool names have prefix like `mcp__plugin_unit-economics_google-sheets__`. Check your available tools list for exact names.
 
 ### 4. Populate with Correct Formulas
 
@@ -161,7 +188,12 @@ Provide to the user:
 
 ## Troubleshooting
 
-**If MCP tools not available:**
+**MCP tools visible but test call fails:**
+- This means credentials.json is missing or invalid
+- User needs to complete Google Cloud setup (see GOOGLE_SHEETS_SETUP.md)
+- Check: `ls ~/.claude/unit-economics/credentials.json`
+
+**If MCP tools not visible at all:**
 - User needs to restart Claude Code after installing plugin
 - Check `${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md` for setup guide
 
@@ -169,3 +201,8 @@ Provide to the user:
 - Check terminal output for authorization URL
 - Copy URL and paste in browser manually
 - Token will be saved after successful authorization
+
+**Common error messages:**
+- "credentials not found" → Need to download credentials.json from Google Cloud Console
+- "invalid_grant" → Token expired, delete token.json and re-authorize
+- "access_denied" → OAuth consent screen not configured properly
