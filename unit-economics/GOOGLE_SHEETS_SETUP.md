@@ -8,7 +8,7 @@ The plugin needs permission to create and edit Google Sheets in your Drive. You'
 
 ---
 
-## Quick Setup (5 minutes)
+## Setup Guide (~10 minutes)
 
 ### Step 1: Install uvx
 
@@ -20,51 +20,72 @@ Restart your terminal after installation.
 
 ### Step 2: Create Google Cloud Project
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Click **"Select a project"** → **"New Project"**
-3. Name it anything (e.g., "Unit Economics Plugin")
+1. Open: **[Create New Project](https://console.cloud.google.com/projectcreate)**
+2. Project name: `unit-economics` (or anything you like)
+3. Organization: leave as is (or select yours)
 4. Click **"Create"**
+5. Wait 10-20 seconds for project to be created
+
+> **Tip**: If you already have a project, you can use it — just make sure to enable the APIs in Step 3.
 
 ### Step 3: Enable APIs
 
-1. In your new project, go to **"APIs & Services"** → **"Enable APIs and Services"**
-2. Search for and enable:
-   - **Google Sheets API**
-   - **Google Drive API**
+Enable both APIs (click each link and press "Enable"):
 
-### Step 4: Create OAuth Credentials
+1. **[Enable Google Sheets API](https://console.cloud.google.com/apis/library/sheets.googleapis.com)** — click blue **"Enable"** button
+2. **[Enable Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com)** — click blue **"Enable"** button
 
-1. Go to **"APIs & Services"** → **"Credentials"**
-2. Click **"Configure OAuth Consent Screen"**
-   - User Type: **External** (or Internal if you have Google Workspace)
-   - Click **"Create"**
-3. Fill in required fields:
-   - App name: "Unit Economics Plugin" (or anything)
-   - User support email: your email
-   - Developer contact: your email
-   - Click **"Save and Continue"** through all screens
-4. Back to **"Credentials"** → **"Create Credentials"** → **"OAuth client ID"**
-5. Application type: **"Desktop app"**
-6. Name: "Claude Code Plugin"
-7. Click **"Create"**
-8. **Download JSON** file (click the download icon)
+> **Note**: Make sure you're in the correct project (check top-left dropdown). If you just created a new project, it should be selected automatically.
 
-### Step 5: Save Credentials File
+### Step 4: Configure OAuth Consent Screen
+
+Before creating credentials, you need to configure the consent screen (what users see when authorizing):
+
+1. Open: **[OAuth Consent Screen](https://console.cloud.google.com/apis/credentials/consent)**
+2. User Type: Select **"External"** → Click **"Create"**
+   - (Choose "Internal" only if you have Google Workspace and want to restrict to your org)
+3. Fill in the form:
+   - **App name**: `Unit Economics Plugin` (or anything)
+   - **User support email**: select your email from dropdown
+   - **App logo**: skip (optional)
+   - **App domain, Authorized domains**: skip (optional)
+   - **Developer contact email**: enter your email
+4. Click **"Save and Continue"**
+5. **Scopes page**: Click **"Save and Continue"** (no changes needed)
+6. **Test users page**: Click **"Add Users"** → enter your Gmail → **"Save and Continue"**
+7. **Summary page**: Click **"Back to Dashboard"**
+
+> **Important**: Your app will be in "Testing" mode. This is fine — it means only test users (you) can use it. No need to publish.
+
+### Step 5: Create OAuth Credentials
+
+1. Open: **[Create Credentials](https://console.cloud.google.com/apis/credentials)**
+2. Click **"+ Create Credentials"** → **"OAuth client ID"**
+3. Application type: **"Desktop app"**
+4. Name: `Claude Code Plugin` (or anything)
+5. Click **"Create"**
+6. **Important!** Click **"Download JSON"** (or the download icon ⬇️)
+7. Save the file — it will be named like `client_secret_XXXXX.json`
+
+> **Security**: This JSON file is like a password. Keep it private, never commit to git.
+
+### Step 6: Save Credentials File
 
 ```bash
 # Create directory
 mkdir -p ~/.claude/unit-economics
 
 # Copy your downloaded file to the right location
-# Replace "YOUR_DOWNLOADED_FILE.json" with actual filename
 cp ~/Downloads/client_secret_*.json ~/.claude/unit-economics/credentials.json
 ```
 
-### Step 6: Restart Claude Code
+> **Verify**: `ls ~/.claude/unit-economics/credentials.json` should show the file.
 
-Close and reopen Claude Code.
+### Step 7: Restart Claude Code
 
-### Step 7: Test It!
+Close and reopen Claude Code (or restart terminal if using CLI).
+
+### Step 8: Test It!
 
 ```shell
 /create-table

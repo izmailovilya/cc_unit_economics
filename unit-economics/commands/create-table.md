@@ -40,7 +40,7 @@ When you run this command:
 ```
 ⚠️ Google Sheets MCP is not set up yet!
 
-To create spreadsheets, you need to configure Google Sheets integration. It takes 5 minutes:
+To create spreadsheets, you need to configure Google Sheets integration (~10 minutes):
 
 1. **Install uvx** (if not installed):
    curl -LsSf https://astral.sh/uv/install.sh | sh
