@@ -93,15 +93,33 @@ Use `batch_update_cells` to populate the copied sheets with user's data:
 
 ### Step 4: Add Formulas
 
-Key formulas to add (reference glossary.md for accuracy):
+**CRITICAL: Column structure in most sheets:**
+```
+Column A = Labels (text)
+Column B = Values (numbers)
+Column C = Units or formulas
+Column D = Notes
+```
+
+**When writing formulas, reference Column B for values, NOT Column A!**
+
+❌ WRONG: `=A4*Inputs!B7`  (A4 is text "Base generation")
+✅ RIGHT: `=B4*Inputs!B7`  (B4 is the number 0.72)
+
+**Key formulas** (reference glossary.md for accuracy):
 
 | Cell | Formula | Description |
 |------|---------|-------------|
-| Conv. to regs | `=C5/B5` | Regs / Users |
-| C1 | `=G5/E5` | Buyers / Trials |
-| AMPPU | `=K5*(1-N5)*O5` | Price × Margin × PaymentCount |
-| CAC | `=Q5/C1_cell` | CPUser / C1 |
+| Conv. to regs | `=D5/C5` | Regs / Users (values in C, D) |
+| C1 | `=H5/F5` | Buyers / Trials |
+| AMPPU | `=L5*(1-O5)*P5` | Price × Margin × PaymentCount |
+| CAC | `=R5/C1_cell` | CPUser / C1 |
 | LTV | `=AMPPU/Churn` | From Inputs sheet |
+
+**Before writing formulas:**
+1. Use `get_sheet_data` to see actual column layout
+2. Identify which column has VALUES (usually B or numeric columns)
+3. Never reference label columns (A) in calculations
 
 ### Step 5: Return Results
 
