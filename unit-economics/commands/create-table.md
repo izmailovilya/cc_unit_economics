@@ -28,7 +28,7 @@ When you run this command:
 
 1. **Make a TEST CALL**: Call `list_spreadsheets` tool (it's read-only and safe)
    - Look for tool containing `google-sheets` and `list_spreadsheets` in the name
-   - Example: `mcp__plugin_unit-economics_google-sheets__list_spreadsheets`
+   - Server name format: `plugin:unit-economics:google-sheets` (with colons)
    - Just seeing MCP tools in the list is NOT enough - they might fail without credentials!
 
 2. **Analyze the result**:
@@ -132,7 +132,7 @@ This plugin uses [xing5/mcp-google-sheets](https://github.com/xing5/mcp-google-s
 - `copy_sheet` - Duplicate a sheet
 - `rename_sheet` - Rename a sheet
 
-**Note**: Tool names have prefix like `mcp__plugin_unit-economics_google-sheets__`. Check your available tools list for exact names.
+**Note**: Server name is `plugin:unit-economics:google-sheets`. Tool naming varies by client — check your available tools list.
 
 ### 4. Populate with Correct Formulas
 
