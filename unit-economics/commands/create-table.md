@@ -44,9 +44,11 @@ Ask the user:
 
 **Method: Copy sheets from template to new spreadsheet**
 
+**IMPORTANT:** Use `create_spreadsheet` (NOT `create_sheet`!) to create a new file.
+
 ```
-1. create_spreadsheet → title: "Unit Economics - {Company Name}"
-   → save the new spreadsheet_id
+1. create_spreadsheet(title: "Unit Economics - {Company Name}")
+   → returns spreadsheet_id (save it for next steps!)
 
 2. list_sheets(template_id) → get all sheet names from template
    Template ID: 1yYgutbjITe1qR1A6FpX3BlxpIAeURN-MKzqrFryvgpQ
@@ -113,17 +115,24 @@ Provide:
 
 ## MCP Tools Reference
 
-Server: `plugin:unit-economics:google-sheets`
+**IMPORTANT: Server name is `plugin:unit-economics:google-sheets` (NOT just `google-sheets`)**
 
-| Tool | Use for |
-|------|---------|
-| `list_spreadsheets` | Test MCP connection |
-| `list_sheets` | Get sheet names from template |
-| `create_spreadsheet` | Create new empty spreadsheet |
-| `copy_sheet` | Copy formatted sheet from template |
-| `batch_update_cells` | Fill data into cells |
-| `get_sheet_data` | Read existing data |
-| `share_spreadsheet` | Share with user's email |
+When calling MCP tools, use the FULL server name.
+
+| Tool | Use for | DO NOT CONFUSE |
+|------|---------|----------------|
+| `create_spreadsheet` | Create NEW spreadsheet file | ≠ create_sheet |
+| `create_sheet` | Add tab to EXISTING spreadsheet | ≠ create_spreadsheet |
+| `list_spreadsheets` | Test MCP connection | |
+| `list_sheets` | Get sheet names from template | |
+| `copy_sheet` | Copy formatted sheet from template | |
+| `batch_update_cells` | Fill data into cells | |
+| `get_sheet_data` | Read existing data | |
+| `share_spreadsheet` | Share with user's email | |
+
+**Common mistakes:**
+- ❌ `google-sheets` → ✅ `plugin:unit-economics:google-sheets`
+- ❌ `create_sheet` for new file → ✅ `create_spreadsheet` for new file
 
 ---
 
