@@ -85,17 +85,31 @@ cp ~/Downloads/client_secret_*.json ~/.claude/unit-economics/credentials.json
 
 Close and reopen Claude Code (or restart terminal if using CLI).
 
-### Step 8: Test It!
+### Step 8: Authorize Google Account
+
+Run this command to start OAuth authorization:
+
+```bash
+CREDENTIALS_PATH=~/.claude/unit-economics/credentials.json \
+TOKEN_PATH=~/.claude/unit-economics/token.json \
+uvx mcp-google-sheets@latest
+```
+
+This will:
+1. **Open browser** with Google sign-in page
+2. **Sign in** with your Google account
+3. **Click "Allow"** to grant permissions
+4. **Token saved** to `~/.claude/unit-economics/token.json`
+
+> **Note**: The terminal will show "Installed X packages" and wait. Once you complete authorization in browser, press `Ctrl+C` to stop.
+
+### Step 9: Test It!
 
 ```shell
 /create-table
 ```
 
-On first run:
-- Browser will open automatically
-- Sign in with your Google account
-- Click **"Allow"** to grant permissions
-- Token will be saved (no need to authorize again)
+Now MCP can access Google Sheets!
 
 ---
 
