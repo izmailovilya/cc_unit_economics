@@ -8,201 +8,154 @@ allowed-tools:
 
 # Create Unit Economics Table
 
-Generate a professional Google Sheets spreadsheet with comprehensive unit economics analysis and calculations.
+Generate a professional Google Sheets spreadsheet by copying a pre-formatted template and filling it with user's data.
 
-## How It Works
+## Template
 
-When you run this command:
+**Template ID**: `1yYgutbjITe1qR1A6FpX3BlxpIAeURN-MKzqrFryvgpQ`
+**Template URL**: https://docs.google.com/spreadsheets/d/1yYgutbjITe1qR1A6FpX3BlxpIAeURN-MKzqrFryvgpQ
 
-1. **First time**: Browser opens for Google OAuth authorization (one-time setup)
-2. **MCP connects**: Uses `mcp-google-sheets` to access Google Sheets API
-3. **Gathers info**: Asks about your business model and metrics
-4. **Creates spreadsheet**: Multiple tabs with formulas and formatting
-5. **Returns URL**: Link to your new spreadsheet in Google Drive
+The template contains pre-formatted sheets with:
+- Professional styling (colors, borders, merged headers)
+- Two-level headers (Russian descriptions + English metric names)
+- Column groups: Воронка продаж → Доход на платящего → На привлечённого → Финансовые метрики
 
 ## Your Task
 
-### Step 0: CRITICAL - Check MCP Setup (Do This FIRST!)
+### Step 0: Check MCP Setup
 
-**Before doing anything else**, actively verify Google Sheets MCP is WORKING (not just visible):
+**Make a TEST CALL** to `list_spreadsheets` tool first:
+- Server: `plugin:unit-economics:google-sheets`
+- If error about credentials/OAuth → show setup instructions from `${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md`
+- If success → proceed!
 
-1. **Make a TEST CALL**: Call `list_spreadsheets` tool (it's read-only and safe)
-   - Look for tool containing `google-sheets` and `list_spreadsheets` in the name
-   - Server name format: `plugin:unit-economics:google-sheets` (with colons)
-   - Just seeing MCP tools in the list is NOT enough - they might fail without credentials!
+### Step 1: Gather Business Data
 
-2. **Analyze the result**:
-   - **Success** (returns list, even empty) → MCP IS working, proceed!
-   - **Error about credentials, OAuth, token, file not found** → MCP NOT configured
+Ask the user:
+1. **Company/project name** (for spreadsheet title)
+2. **Do they have data?**
+   - CSV/Excel file path
+   - Or will input manually
+   - Or use sample data
+3. **Business model**: SaaS, e-commerce, marketplace, mobile app
+4. **Key metrics** (if known): pricing, CAC, churn, conversion rates
 
-3. **If MCP is NOT configured**, tell the user:
+### Step 2: Create Spreadsheet from Template
+
+**Method: Copy sheets from template to new spreadsheet**
 
 ```
-⚠️ Google Sheets MCP is not set up yet!
+1. create_spreadsheet → title: "Unit Economics - {Company Name}"
+   → save the new spreadsheet_id
 
-To create spreadsheets, you need to configure Google Sheets integration (~10 minutes):
+2. list_sheets(template_id) → get all sheet names from template
+   Template ID: 1yYgutbjITe1qR1A6FpX3BlxpIAeURN-MKzqrFryvgpQ
 
-1. **Install uvx** (if not installed):
-   curl -LsSf https://astral.sh/uv/install.sh | sh
+3. For each sheet in template:
+   copy_sheet(
+     src_spreadsheet: "1yYgutbjITe1qR1A6FpX3BlxpIAeURN-MKzqrFryvgpQ",
+     src_sheet: "{sheet_name}",
+     dst_spreadsheet: "{new_spreadsheet_id}",
+     dst_sheet: "{sheet_name}"
+   )
 
-2. **Follow setup guide**: Read detailed instructions at:
-   ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
-
-   Or run: cat ${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md
-
-3. **Quick summary**:
-   - Create Google Cloud project
-   - Enable Google Sheets API + Drive API
-   - Create OAuth Client ID (Desktop app)
-   - Download credentials JSON
-   - Save to: ~/.claude/unit-economics/credentials.json
-   - Restart Claude Code
-
-4. **Test**: Run /create-table again
-
-Would you like me to show you the detailed setup instructions?
+4. Delete the default "Sheet1" if it exists (optional)
 ```
 
-4. **If user says yes**, use Read tool to show the full GOOGLE_SHEETS_SETUP.md content
+**Important**: `copy_sheet` preserves ALL formatting from template:
+- Colors, fonts, borders
+- Merged cells
+- Column widths
+- Conditional formatting
 
-5. **Stop here** - do not attempt to create spreadsheet without working MCP
+### Step 3: Fill Data
 
-6. **If MCP IS working**, proceed with creating the spreadsheet!
+Use `batch_update_cells` to populate the copied sheets with user's data:
+
+```json
+{
+  "spreadsheet_id": "{new_spreadsheet_id}",
+  "sheet": "{sheet_name}",
+  "ranges": {
+    "A5:A10": [["june 2025"], [""], [""], ["july 2025"], [""], [""]],
+    "C5:C10": [[1203], [497], [706], [1413], [828], [585]]
+  }
+}
+```
+
+**Data row structure** (starting from row 5, after headers):
+- Row for month total (e.g., "june 2025")
+- Row for "paid" channel
+- Row for "other" channel
+- Repeat for each month
+
+### Step 4: Add Formulas
+
+Key formulas to add (reference glossary.md for accuracy):
+
+| Cell | Formula | Description |
+|------|---------|-------------|
+| Conv. to regs | `=C5/B5` | Regs / Users |
+| C1 | `=G5/E5` | Buyers / Trials |
+| AMPPU | `=K5*(1-N5)*O5` | Price × Margin × PaymentCount |
+| CAC | `=Q5/C1_cell` | CPUser / C1 |
+| LTV | `=AMPPU/Churn` | From Inputs sheet |
+
+### Step 5: Return Results
+
+Provide:
+1. **Spreadsheet URL**: `https://docs.google.com/spreadsheets/d/{id}`
+2. **What was created**: List of sheets copied
+3. **How to use**: Which cells to edit (yellow = inputs)
+4. **Key metrics** if data was provided: LTV/CAC ratio, payback period
 
 ---
 
-### 1. Gather Business Data (Only if MCP is available)
+## MCP Tools Reference
 
-Ask the user about:
-- **Business model type**: e-commerce, SaaS, marketplace, mobile app, etc.
-- **Key metrics**: CAC, LTV, AMPPU, conversion, retention, payback period
-- **Pricing plans**: if applicable (Starter, Business, Enterprise)
-- **Data source**: CSV file path, or will input manually
+Server: `plugin:unit-economics:google-sheets`
 
-### 2. Design Spreadsheet Structure
+| Tool | Use for |
+|------|---------|
+| `list_spreadsheets` | Test MCP connection |
+| `list_sheets` | Get sheet names from template |
+| `create_spreadsheet` | Create new empty spreadsheet |
+| `copy_sheet` | Copy formatted sheet from template |
+| `batch_update_cells` | Fill data into cells |
+| `get_sheet_data` | Read existing data |
+| `share_spreadsheet` | Share with user's email |
 
-Create these tabs using MCP tools:
+---
 
-**Tab 1: Inputs**
-- All input parameters (pricing, COGS, CAC, churn rates)
-- Color-coded for easy editing
-- Notes column explaining each parameter
+## Example Flow
 
-**Tab 2: Unit Economics**
-- AMPPU calculation: `Price - COGS`
-- CAC calculation: `CPUser / C1`
-- LTV calculation: `AMPPU / Churn`
-- LTV/CAC ratio
-- Payback period
-- Blended metrics (if multiple plans)
-
-**Tab 3: Growth Projections**
-- 12-month forecast
-- New customers, MRR, COGS, Gross Profit
-- Marketing spend, Net Profit
-- Cumulative profit tracking
-
-**Tab 4: Cohort Analysis**
-- Retention table (M0-M12)
-- Cohort MRR over time
-- Key retention metrics with targets
-
-### 3. Use MCP Google Sheets Tools
-
-This plugin uses [xing5/mcp-google-sheets](https://github.com/xing5/mcp-google-sheets). Available tools:
-
-**Reading:**
-- `list_spreadsheets` - List accessible spreadsheets
-- `list_sheets` - List all sheets (tabs) in a spreadsheet
-- `get_sheet_data` - Read data from a range
-- `get_sheet_formulas` - Read formulas from a range
-
-**Creating:**
-- `create_spreadsheet` - Create new spreadsheet (returns spreadsheet_id)
-- `create_sheet` - Add new sheet (tab) to spreadsheet
-
-**Writing:**
-- `update_cells` - Write data to a specific range
-- `batch_update_cells` - Update multiple ranges at once
-- `add_rows` - Append rows to end of sheet
-- `add_columns` - Add columns to a sheet
-
-**Managing:**
-- `share_spreadsheet` - Share with users/emails
-- `copy_sheet` - Duplicate a sheet
-- `rename_sheet` - Rename a sheet
-
-**Note**: Server name is `plugin:unit-economics:google-sheets`. Tool naming varies by client — check your available tools list.
-
-### 4. Populate with Correct Formulas
-
-**IMPORTANT**: Use formulas from `${CLAUDE_PLUGIN_ROOT}/materials/glossary.md`:
-
-```
-CAC = Acquisition Costs / buyers
-AMPPU = (Av.Price - COGS) × AvPaymentCount
-LTV = AMPPU / Churn
-C1 = buyers / users
-Payback Period = CAC / AMPU
-```
-
-Reference cells from the Inputs tab (e.g., `=Inputs!B4*Inputs!B5`)
-
-### 5. Apply Professional Formatting
-
-- **Headers**: Bold, colored background, centered
-- **Numbers**: Currency format for $, percentage for %
-- **Conditional formatting**: Red for negative profit, green for positive
-- **Freeze rows**: Top row on each tab
-- **Column widths**: Auto-adjust or set manually
-- **Borders**: Around tables for clarity
-
-### 6. Return Results
-
-Provide to the user:
-- **Spreadsheet URL**: Direct link to open in browser
-- **Brief explanation**: What each tab contains
-- **How to use**: Which cells to edit (Inputs tab)
-- **Key insights**: Current LTV/CAC ratio, payback period status
-
-## Example Interaction
-
-**User**: "Create a unit economics table for my SaaS business"
+**User**: "/create-table for my SaaS startup VideoAI"
 
 **You**:
-1. Ask: "What pricing plans do you have? (e.g., Starter $49, Business $149)"
-2. Ask: "What's your estimated CAC and monthly churn?"
-3. Read `materials/glossary.md` for formula reference
-4. Create spreadsheet with MCP tools
-5. Populate Inputs tab with their data
-6. Add formulas in Unit Economics tab
-7. Return: "Here's your spreadsheet: [URL]. Key finding: LTV/CAC = 3.2 (healthy!)"
+1. Test MCP: `list_spreadsheets` → success
+2. Ask: "Do you have metrics data or should I use sample data?"
+3. User: "Use sample data for now"
+4. Create: `create_spreadsheet` title="Unit Economics - VideoAI"
+5. List template sheets: `list_sheets` on template
+6. Copy each sheet: `copy_sheet` from template to new
+7. Fill sample data: `batch_update_cells`
+8. Return: "Created! URL: https://... The yellow cells are for your inputs."
 
-## Tips
-
-- Start simple with Inputs + Unit Economics tabs, add others if requested
-- Use glossary.md for accurate formulas (not assumptions!)
-- Add comments in cells to explain complex formulas
-- Include sample data if user doesn't have real numbers yet
-- Color-code input cells vs calculated cells (blue vs white)
+---
 
 ## Troubleshooting
 
-**MCP tools visible but test call fails:**
-- This means credentials.json is missing or invalid
-- User needs to complete Google Cloud setup (see GOOGLE_SHEETS_SETUP.md)
-- Check: `ls ~/.claude/unit-economics/credentials.json`
+**"Template not accessible"**
+- Template must be shared as "Anyone with link can view"
+- Or user's Google account must have access
 
-**If MCP tools not visible at all:**
-- User needs to restart Claude Code after installing plugin
-- Check `${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md` for setup guide
+**"copy_sheet failed"**
+- Check template ID is correct
+- Check sheet names match exactly (case-sensitive)
 
-**If browser doesn't open for OAuth:**
-- Check terminal output for authorization URL
-- Copy URL and paste in browser manually
-- Token will be saved after successful authorization
+**Formatting not copied**
+- `copy_sheet` DOES copy formatting
+- If not working, check if sheets were created fresh vs copied
 
-**Common error messages:**
-- "credentials not found" → Need to download credentials.json from Google Cloud Console
-- "invalid_grant" → Token expired, delete token.json and re-authorize
-- "access_denied" → OAuth consent screen not configured properly
+**MCP credentials error**
+- See `${CLAUDE_PLUGIN_ROOT}/GOOGLE_SHEETS_SETUP.md`
